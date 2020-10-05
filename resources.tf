@@ -40,3 +40,16 @@ resource "aws_ecs_task_definition" "web" {
 }
 
 
+# Actually create Jitsi Services
+
+resource "aws_ecs_service" "web" {
+  name = "web"
+  cluster = "${aws_ecs_cluster.jitsi.id}"
+  task_definition = "${aws_ecs_task_definition.web.arn}"
+  launch_type = "FARGATE"
+  desired_count = 3 
+  network_configuration {
+    subnets = ["${aws_subnet.subnet_a.id}", "${aws_subnet.subnet_b.id}", "${aws_subnet.subnet_c.id}"]
+    assign_public_ip = true
+  }
+}
