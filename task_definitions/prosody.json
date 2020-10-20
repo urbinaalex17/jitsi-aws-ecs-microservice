@@ -1,0 +1,21 @@
+[
+    {
+      "name": "prosody",
+      "image": "jitsi/prosody:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 5222,
+          "hostPort": 5222
+        },
+        {
+          "containerPort": 5347,
+          "hostPort": 5347
+        },
+        {
+          "containerPort": 5280,
+          "hostPort": 5280
+        }
+      ]
+    }
+]
