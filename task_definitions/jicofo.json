@@ -1,0 +1,7 @@
+[
+    {
+      "name": "jicofo",
+      "image": "jitsi/jicofo:latest",
+      "essential": true
+    }
+]
