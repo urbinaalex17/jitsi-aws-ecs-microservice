@@ -40,6 +40,55 @@ resource "aws_ecs_task_definition" "web" {
 }
 
 
+# Create the Application Load Balancer, Target Group and Security Group
+resource "aws_alb" "alb_web" {
+  name = "jitsi-web-alb"
+  load_balancer_type = "application"
+  subnets = [ 
+    "${aws_subnet.subnet_a.id}",
+    "${aws_subnet.subnet_b.id}",
+    "${aws_subnet.subnet_c.id}"
+  ]
+  security_groups = ["${aws_security_group.jitsi_alb_sec_group.id}"]
+}
+
+# Creating a security group for the load balancer:
+resource "aws_security_group" "jitsi_alb_sec_group" {
+  vpc_id   = aws_vpc.jitsi_vpc.id 
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_lb_target_group" "tg_web" {
+  name     = "jitsi-web-tg"
+  port     = 80
+  protocol = "HTTP"
+  target_type = "ip"
+  vpc_id   = aws_vpc.jitsi_vpc.id
+}
+
+resource "aws_lb_listener" "lb_web_listener" {
+  load_balancer_arn = "${aws_alb.alb_web.arn}" # Referencing our load balancer
+  port = "80"
+  protocol = "HTTP"
+  default_action {
+    type = "forward"
+    target_group_arn = "${aws_lb_target_group.tg_web.arn}" # Referencing our tagrte group
+  }
+}
+
+
 # Actually create Jitsi Services
 
 resource "aws_ecs_service" "web" {
@@ -48,8 +97,18 @@ resource "aws_ecs_service" "web" {
   task_definition = "${aws_ecs_task_definition.web.arn}"
   launch_type = "FARGATE"
   desired_count = 3 
+
   network_configuration {
     subnets = ["${aws_subnet.subnet_a.id}", "${aws_subnet.subnet_b.id}", "${aws_subnet.subnet_c.id}"]
     assign_public_ip = true
   }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.tg_web.arn
+    container_name   = "web"
+    container_port   = 80
+  }
+
+  depends_on = [aws_ecs_cluster.jitsi]
+
 }
