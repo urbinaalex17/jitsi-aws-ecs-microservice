@@ -62,6 +62,13 @@ resource "aws_security_group" "jitsi_alb_sec_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -71,8 +78,16 @@ resource "aws_security_group" "jitsi_alb_sec_group" {
 }
 
 resource "aws_lb_target_group" "tg_web" {
-  name     = "jitsi-web-tg"
+  name     = "jitsi-web-tg-http"
   port     = 80
+  protocol = "HTTP"
+  target_type = "ip"
+  vpc_id   = aws_vpc.jitsi_vpc.id
+}
+
+resource "aws_lb_target_group" "tg_web_https" {
+  name     = "jitsi-web-tg-https"
+  port     = 443
   protocol = "HTTP"
   target_type = "ip"
   vpc_id   = aws_vpc.jitsi_vpc.id
@@ -85,6 +100,16 @@ resource "aws_lb_listener" "lb_web_listener" {
   default_action {
     type = "forward"
     target_group_arn = "${aws_lb_target_group.tg_web.arn}" # Referencing our tagrte group
+  }
+}
+
+resource "aws_lb_listener" "lb_web_listener_https" {
+  load_balancer_arn = "${aws_alb.alb_web.arn}" # Referencing our load balancer
+  port = "443"
+  protocol = "HTTP"
+  default_action {
+    type = "forward"
+    target_group_arn = "${aws_lb_target_group.tg_web_https.arn}" # Referencing our tagrte group
   }
 }
 
@@ -107,6 +132,12 @@ resource "aws_ecs_service" "web" {
     target_group_arn = aws_lb_target_group.tg_web.arn
     container_name   = "web"
     container_port   = 80
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.tg_web_https.arn
+    container_name   = "web"
+    container_port   = 443 
   }
 
   depends_on = [aws_ecs_cluster.jitsi]
