@@ -57,6 +57,15 @@ resource "aws_ecs_task_definition" "jicofo" {
   cpu = 256
 }
 
+resource "aws_ecs_task_definition" "jvb" {
+  family = "jvb"
+  container_definitions = file("task_definitions/jvb.json")
+  requires_compatibilities = ["FARGATE"]
+  network_mode= "awsvpc"
+  memory = 512
+  cpu = 256
+}
+
 
 # Create the Application Load Balancer, Target Group and Security Group
 resource "aws_alb" "alb_web" {
@@ -182,6 +191,22 @@ resource "aws_ecs_service" "jicofo" {
   name = "jicofo"
   cluster = "${aws_ecs_cluster.jitsi.id}"
   task_definition = "${aws_ecs_task_definition.jicofo.arn}"
+  launch_type = "FARGATE"
+  desired_count = 1 
+
+  network_configuration {
+    subnets = ["${aws_subnet.subnet_a.id}", "${aws_subnet.subnet_b.id}", "${aws_subnet.subnet_c.id}"]
+    assign_public_ip = false
+  }
+
+  depends_on = [aws_ecs_service.prosody]
+
+}
+
+resource "aws_ecs_service" "jvb" {
+  name = "jvb"
+  cluster = "${aws_ecs_cluster.jitsi.id}"
+  task_definition = "${aws_ecs_task_definition.jvb.arn}"
   launch_type = "FARGATE"
   desired_count = 1 
 
