@@ -36,7 +36,9 @@ resource "aws_ecs_task_definition" "web" {
   requires_compatibilities = ["FARGATE"]
   network_mode= "awsvpc"
   memory = 512
-  cpu = 256 
+  cpu = 256
+  #TODO 
+  execution_role_arn = "arn:aws:iam::956222300961:role/ecsTaskExecutionRole"
 }
 
 resource "aws_ecs_task_definition" "prosody" {
@@ -46,6 +48,8 @@ resource "aws_ecs_task_definition" "prosody" {
   network_mode= "awsvpc"
   memory = 512
   cpu = 256
+  #TODO
+  execution_role_arn = "arn:aws:iam::956222300961:role/ecsTaskExecutionRole"
 }
 
 resource "aws_ecs_task_definition" "jicofo" {
@@ -55,6 +59,8 @@ resource "aws_ecs_task_definition" "jicofo" {
   network_mode= "awsvpc"
   memory = 512
   cpu = 256
+  #TODO
+  execution_role_arn = "arn:aws:iam::956222300961:role/ecsTaskExecutionRole"
 }
 
 resource "aws_ecs_task_definition" "jvb" {
@@ -64,6 +70,8 @@ resource "aws_ecs_task_definition" "jvb" {
   network_mode= "awsvpc"
   memory = 512
   cpu = 256
+  #TODO
+  execution_role_arn = "arn:aws:iam::956222300961:role/ecsTaskExecutionRole"
 }
 
 
