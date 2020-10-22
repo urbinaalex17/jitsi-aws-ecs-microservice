@@ -1,18 +1,75 @@
 [
-    {
-      "name": "jvb",
-      "image": "jitsi/jvb:latest",
-      "essential": true,
-      "portMappings": [
-        {
-          "containerPort": 10000,
-          "hostPort": 10000,
-          "protocol": "udp"
-        },
-        {
-          "containerPort": 4443,
-          "hostPort": 4443
-        }
-      ]
-    }
+  {
+    "name": "jvb",
+    "image": "jitsi/jvb:latest",
+    "cpu": 256,
+    "memory": 512,
+    "essential": true,
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-region": "us-east-1",
+        "awslogs-group": "/ecs/jitsi",
+        "awslogs-stream-prefix": "ecs"
+      }
+    },
+    "executionRoleArn": "arn:aws:iam::956222300961:role/ecsTaskExecutionRole",
+    "portMappings": [
+      {
+        "containerPort": 10000,
+        "hostPort": 10000,
+        "protocol": "udp"
+      },
+      {
+        "containerPort": 4443,
+        "hostPort": 4443
+      }
+    ],
+    "environment": [
+      {
+        "name": "XMPP_AUTH_DOMAIN",
+        "value": "auth.meet.jitsi"
+      },
+      {
+        "name": "XMPP_INTERNAL_MUC_DOMAIN",
+        "value": "internal-muc.meet.jitsi"
+      },
+      {
+        "name": "XMPP_SERVER",
+        "value": "xmpp.meet.jitsi"
+      },
+      {
+        "name": "JVB_AUTH_USER",
+        "value": "jvb"
+      },
+      {
+        "name": "JVB_AUTH_PASSWORD",
+        "value": "5289b5899e97bbaddae0984406842d87"
+      },
+      {
+        "name": "JVB_BREWERY_MUC",
+        "value": "jvbbrewery"
+      },
+      {
+        "name": "JVB_PORT",
+        "value": "10000"
+      },
+      {
+        "name": "JVB_TCP_HARVESTER_DISABLED",
+        "value": "true"
+      },
+      {
+        "name": "JVB_TCP_PORT",
+        "value": "4443"
+      },
+      {
+        "name": "JVB_STUN_SERVERS",
+        "value": "meet-jit-si-turnrelay.jitsi.net:443"
+      },
+      {
+        "name": "TZ",
+        "value": "UTC"
+      }
+    ]
+  }
 ]

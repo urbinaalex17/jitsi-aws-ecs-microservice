@@ -2,9 +2,18 @@
     {
       "name": "web",
       "image": "jitsi/web:latest",
-      "cpu": 10,
+      "cpu": 256,
       "memory": 512,
       "essential": true,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-region": "us-east-1",
+          "awslogs-group": "/ecs/jitsi",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "executionRoleArn": "arn:aws:iam::956222300961:role/ecsTaskExecutionRole",
       "portMappings": [
         {
           "containerPort": 80,
@@ -13,6 +22,36 @@
         {
           "containerPort": 443,
           "hostPort": 443
+        }
+      ],
+      "environment": [
+        {
+          "name": "TZ",
+          "value": "UTC"
+        },
+        {
+          "name": "JICOFO_AUTH_USER",
+          "value": "focus"
+        },
+        {
+          "name": "XMPP_AUTH_DOMAIN",
+          "value": "auth.meet.jitsi"
+        },
+        {
+          "name": "XMPP_BOSH_URL_BASE",
+          "value": "http://xmpp.meet.jitsi:5280"
+        },
+        {
+          "name": "XMPP_GUEST_DOMAIN",
+          "value": "guest.meet.jitsi"
+        },
+        {
+          "name": "XMPP_MUC_DOMAIN",
+          "value": "muc.meet.jitsi"
+        },
+        {
+          "name": "XMPP_RECORDER_DOMAIN",
+          "value": "recorder.meet.jitsi"
         }
       ]
     }

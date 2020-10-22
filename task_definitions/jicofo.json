@@ -1,7 +1,72 @@
 [
-    {
-      "name": "jicofo",
-      "image": "jitsi/jicofo:latest",
-      "essential": true
-    }
+  {
+    "name": "jicofo",
+    "image": "jitsi/jicofo:latest",
+    "cpu": 256,
+    "memory": 512,
+    "essential": true,
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-region": "us-east-1",
+        "awslogs-group": "/ecs/jitsi",
+        "awslogs-stream-prefix": "ecs"
+      }
+    },
+    "executionRoleArn": "arn:aws:iam::956222300961:role/ecsTaskExecutionRole",
+    "environment": [
+      {
+        "name": "XMPP_DOMAIN",
+        "value": "meet.jitsi"
+      },
+      {
+        "name": "XMPP_AUTH_DOMAIN",
+        "value": "auth.meet.jitsi"
+      },
+      {
+        "name": "XMPP_INTERNAL_MUC_DOMAIN",
+        "value": "internal-muc.meet.jitsi"
+      },
+      {
+        "name": "XMPP_MUC_DOMAIN",
+        "value": "muc.meet.jitsi"
+      },
+      {
+        "name": "XMPP_SERVER",
+        "value": "xmpp.meet.jitsi"
+      },
+      {
+        "name": "JICOFO_COMPONENT_SECRET",
+        "value": "8dc54570ed0a0de3bb5cdf076dc53389"
+      },
+      {
+        "name": "JICOFO_AUTH_USER",
+        "value": "focus"
+      },
+      {
+        "name": "JICOFO_AUTH_PASSWORD",
+        "value": "fed3a0c23272f2147c781024253e0375"
+      },
+      {
+        "name": "JVB_BREWERY_MUC",
+        "value": "jvbbrewery"
+      },
+      {
+        "name": "JIGASI_BREWERY_MUC",
+        "value": "jigasibrewery"
+      },
+      {
+        "name": "JIBRI_BREWERY_MUC",
+        "value": "jibribrewery"
+      },
+      {
+        "name": "JIBRI_PENDING_TIMEOUT",
+        "value": "90"
+      },
+      {
+        "name": "TZ",
+        "value": "UTC"
+      }
+    ]
+  }
 ]

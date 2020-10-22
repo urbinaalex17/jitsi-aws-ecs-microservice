@@ -1,21 +1,106 @@
 [
-    {
-      "name": "prosody",
-      "image": "jitsi/prosody:latest",
-      "essential": true,
-      "portMappings": [
-        {
-          "containerPort": 5222,
-          "hostPort": 5222
-        },
-        {
-          "containerPort": 5347,
-          "hostPort": 5347
-        },
-        {
-          "containerPort": 5280,
-          "hostPort": 5280
-        }
-      ]
-    }
+  {
+    "name": "prosody",
+    "image": "jitsi/prosody:latest",
+    "cpu": 256,
+    "memory": 512,
+    "essential": true,
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-region": "us-east-1",
+        "awslogs-group": "/ecs/jitsi",
+        "awslogs-stream-prefix": "ecs"
+      }
+    },
+    "executionRoleArn": "arn:aws:iam::956222300961:role/ecsTaskExecutionRole",
+    "portMappings": [
+      {
+        "containerPort": 5222,
+        "hostPort": 5222
+      },
+      {
+        "containerPort": 5347,
+        "hostPort": 5347
+      },
+      {
+        "containerPort": 5280,
+        "hostPort": 5280
+      }
+    ],
+    "environment": [
+      {
+        "name": "XMPP_DOMAIN",
+        "value": "meet.jitsi"
+      },
+      {
+        "name": "XMPP_AUTH_DOMAIN",
+        "value": "auth.meet.jitsi"
+      },
+      {
+        "name": "XMPP_GUEST_DOMAIN",
+        "value": "guest.meet.jitsi"
+      },
+      {
+        "name": "XMPP_MUC_DOMAIN",
+        "value": "muc.meet.jitsi"
+      },
+      {
+        "name": "XMPP_INTERNAL_MUC_DOMAIN",
+        "value": "internal-muc.meet.jitsi"
+      },
+      {
+        "name": "XMPP_RECORDER_DOMAIN",
+        "value": "recorder.meet.jitsi"
+      },
+      {
+        "name": "JICOFO_COMPONENT_SECRET",
+        "value": "8dc54570ed0a0de3bb5cdf076dc53389"
+      },
+      {
+        "name": "JICOFO_AUTH_USER",
+        "value": "focus"
+      },
+      {
+        "name": "JICOFO_AUTH_PASSWORD",
+        "value": "fed3a0c23272f2147c781024253e0375"
+      },
+      {
+        "name": "JVB_AUTH_USER",
+        "value": "jvb"
+      },
+      {
+        "name": "JVB_AUTH_PASSWORD",
+        "value": "5289b5899e97bbaddae0984406842d87"
+      },
+      {
+        "name": "JIGASI_XMPP_USER",
+        "value": "jigasi"
+      },
+      {
+        "name": "JIGASI_XMPP_PASSWORD",
+        "value": "93a4ccc56d800e21db636d78fc5fa499"
+      },
+      {
+        "name": "JIBRI_XMPP_USER",
+        "value": "jibri"
+      },
+      {
+        "name": "JIBRI_XMPP_PASSWORD",
+        "value": "c26cd826f9658d688c1ec6f5633df93c"
+      },
+      {
+        "name": "JIBRI_RECORDER_USER",
+        "value": "recorder"
+      },
+      {
+        "name": "JIBRI_RECORDER_PASSWORD",
+        "value": "8b6a81d2ae52fce4979815b93d02cccf"
+      },
+      {
+        "name": "TZ",
+        "value": "UTC"
+      }
+    ]
+  }
 ]
